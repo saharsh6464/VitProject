@@ -1,6 +1,11 @@
 import React, { createContext, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { handleLogin, authenticateStudent } from "./auth";
+import { markAttendance, addClassRecord, regStud } from "./utils";
+import { checkFingerprintTime } from "./fingerprint";
+import sha256 from "js-sha256";
+import { saveTeacherCredentials,getSavedTeacherCredentials } from "./saveCredT";
+import { saveCredentials } from "./saveCredS";
 // Create context
 export const dataContext = createContext({
   personDetails: {},
@@ -32,24 +37,56 @@ const DataContextProvider = ({ children }) => {
   const [personDetails, dispatchData] = useReducer(dataReducer, {});
   const navigate = useNavigate();
 
-  const createclass = (data, check = true) => {
-    console.log("Create class function called");
-    // Logic will go here
+  const createclass = async (data,check=true) => {
+    if (data.role === "Teacher") {
+      //const isLoggedIn = await handleLogin(data.email, await sha256(data.password));
+      const isLoggedIn = await handleLogin(data.email, data.password);
+      if (isLoggedIn) {
+        dispatchData({ type: "DetailsT", payload: { data } });
+        if(check)
+        saveTeacherCredentials(data.email,data.password);
+        navigate("/teacher-login/dashboard");
+      
+    }
+
+    } else if (data.role === "Student") {
+      const check=await checkFingerprintTime(data.email);
+      const hash=(data.password);
+      if (check) {
+        const isLoggedIn = await authenticateStudent(
+          data.name,
+          data.email,
+          hash
+        );
+        if (isLoggedIn) {
+          dispatchData({ type: "DetailsT", payload: { data } });
+          saveCredentials(data.email,data.password,data.name);
+          navigate("/student-login/dashboard");
+        }
+      }
+    }
   };
 
-  const getClassAttendance = (data) => {
-    console.log("Get class attendance function called");
-    // Logic will go here
+  const getClassAttendance = async (data) => {
+    console.log(data);
+    const success = await markAttendance(
+      personDetails.name,
+      personDetails.email,
+      data.state.subjectCode,
+      data.state.useDate
+    );
+    if (success) {
+      navigate("/student-login/dashboard");
+    }
   };
 
   const takeAttendance12 = (date, subjectCode) => {
-    console.log("Take attendance function called");
-    // Logic will go here
+    addClassRecord(date, personDetails.email, subjectCode);
   };
 
-  const registerStudent = (obj) => {
-    console.log("Register student function called");
-    // Logic will go here
+  const registerStudent = async (obj) => {
+    console.log("Register Student function called with:", obj);
+    await regStud(obj, obj.studentId);
   };
 
   return (
@@ -57,13 +94,9 @@ const DataContextProvider = ({ children }) => {
       value={{
         personDetails,
         createclass,
-        registerStudent,
-        createNewQR: () => {
-          console.log("Create new QR function called");
-        },
-        viewClass: () => {
-          console.log("View class function called");
-        },
+        registerStudent, // Pass the actual registerStudent function here
+        createNewQR: () => {},
+        viewClass: () => {},
         takeAttendance12,
         getClassAttendance,
       }}
