@@ -85,7 +85,12 @@ attendance-portal/
 ---
 ## Project Demo
 Experience the live application:  
-**[Hosted Application Link](<hosted-application-link>)**  
+**[Hosted Application Link](https://aesthetic-lamington-726b8f.netlify.app/)**  
+Refer Demo video for tutorial
+Credentials for teacher:
+email:teacher@gmail.com pass:teacher
+email:teacher1@gmail.com pass:teacher1
+You can register student and look the website
 **[Demo Video](<demo-video-link>)**
 ---
 
