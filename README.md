@@ -75,4 +75,13 @@ attendance-portal/
 ```
 
 ---
+## Project Demo
+Experience the live application:  
+**[Hosted Application Link](<demo video link>)**
+
+---
+
+## Project Report
+For detailed information about the project, refer to the project report:  
+**[Download Project Report PDF](https://drive.google.com/file/d/18GYsxZCyIY5ZMbPezyBxqJidtIjm50gu/view?usp=drive_link)**
 
