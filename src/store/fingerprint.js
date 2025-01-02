@@ -96,3 +96,73 @@ export async function checkFingerprintTime(email1, thresholdMinutes = 5) {
     }
 }
 
+
+
+
+// import { getDatabase, ref, get, set, update } from "firebase/database";
+// import FingerprintJS from "@fingerprintjs/fingerprintjs";
+// const encodeKey = (key) => key.replace(/\./g, ",");
+// export async function generateAndStoreFingerprint(email1) {
+//     const email = encodeKey(email1);
+//     const db = getDatabase();
+//     const accessTokenKey = "access_token";
+//     const accessToken = localStorage.getItem(accessTokenKey);
+
+//     if (!accessToken) {
+//         const fp = await FingerprintJS.load();
+//         const result = await fp.get();
+//         const fingerprint = result.visitorId;
+
+//         // Save access token to localStorage
+//         localStorage.setItem(accessTokenKey, fingerprint);
+
+//         // Save fingerprint data to Firebase
+//         await set(ref(db, `fingerprints/${fingerprint}`), {
+//             email,
+//             time: new Date().toISOString(),
+//         });
+//     } else {
+//         // Update the Firebase entry
+//         const fingerprint = accessToken;
+//         await update(ref(db, `fingerprints/${fingerprint}`), {
+//             email,
+//             time: new Date().toISOString(),
+//         });
+//     }
+// }
+
+// export async function checkFingerprintTime(email1, thresholdMinutes = 5) {
+//     const email = encodeKey(email1);
+//     const db = getDatabase();
+//     const accessTokenKey = "access_token";
+//     const fingerprint = localStorage.getItem(accessTokenKey);
+
+//     if (!fingerprint) {
+//         console.log("No token found for your device u can proceed");
+//         // await generateAndStoreFingerprint(email);
+//         return true;
+//     }
+
+//     const snapshot = await get(ref(db, `fingerprints/${fingerprint}`));
+//     if (!snapshot.exists()) {
+//         console.log("token not found in firebase u can proced");
+//         // await generateAndStoreFingerprint(email);
+//         return true;
+//     }
+
+//     const firebaseData = snapshot.val();
+//     const storedTime = new Date(firebaseData.time);
+//     const currentTime = new Date();
+
+//     const timeDifference = (currentTime - storedTime) / (1000 * 60); // Time difference in minutes
+
+//     if (timeDifference > thresholdMinutes) {
+//         console.log("Success");
+//         return true;
+//     } else if (email == firebaseData.email)
+//         return true;
+//     else {
+//         alert("time left" + (60.0 - (timeDifference * 60)));
+//         return false;
+//     }
+// }

@@ -11,12 +11,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { dataContext } from "../store/data";
-import "./studSub.css"; // Ensure this file contains the required CSS
 
-// Helper function to encode Firebase keys
 const encodeKey = (key) => key.replace(/\./g, ",");
 
-// Helper function to fetch student name
 const getStudentName = async (teacherEmail, studentEmail) => {
   const db = getDatabase();
   const studentRef = ref(
@@ -27,7 +24,7 @@ const getStudentName = async (teacherEmail, studentEmail) => {
   try {
     const snapshot = await get(studentRef);
     if (snapshot.exists()) {
-      return snapshot.val()?.name || "Unknown Student"; // Assume 'name' exists
+      return snapshot.val()?.name || "Unknown Student";
     }
     return null;
   } catch (error) {
@@ -39,8 +36,8 @@ const getStudentName = async (teacherEmail, studentEmail) => {
 const StudentSubjectDetails = () => {
   const location = useLocation();
   const { subjectCode } = location.state || {};
-  const { personDetails } = useContext(dataContext); // Fetch teacher info from context
-  const teacherEmail = personDetails?.name || ""; // Ensure email is defined
+  const { personDetails } = useContext(dataContext);
+  const teacherEmail = personDetails?.name || "";
   const studentEmail = personDetails?.email || "";
   const [studentName, setStudentName] = useState("");
   const [attendanceDetails, setAttendanceDetails] = useState([]);
@@ -54,14 +51,13 @@ const StudentSubjectDetails = () => {
         return;
       }
 
-      // Fetch student name
       const fetchedStudentName = await getStudentName(
         teacherEmail,
         studentEmail
       );
       if (fetchedStudentName) {
         setStudentName(fetchedStudentName);
-        await fetchAttendanceData(); // Fetch attendance data
+        await fetchAttendanceData();
       } else {
         setError("Failed to fetch student details.");
       }
@@ -91,7 +87,6 @@ const StudentSubjectDetails = () => {
 
         setAttendanceDetails(details);
 
-        // Prepare data for chart
         let totalClasses = 0;
         let presentClasses = 0;
         const formattedChartData = details.map((entry) => {
@@ -117,56 +112,59 @@ const StudentSubjectDetails = () => {
   };
 
   return (
-    <div className="student-details">
-      <h1>Attendance Details for {studentName}</h1>
-      <h3>Subject: {subjectCode}</h3>
-      {error && <p className="error">{error}</p>}
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 p-4">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-4 text-center">Attendance Details for {studentName}</h1>
+        <h3 className="text-xl font-medium mb-4 text-center">Subject: {subjectCode}</h3>
 
-      {attendanceDetails.length > 0 ? (
-        <>
-          {/* Line Chart */}
-          <div className="chart-container">
-            <ResponsiveContainer width="95%" height={400}>
-              <LineChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis
-                  domain={[0, 100]}
-                  tickFormatter={(value) => `${value}%`}
-                />
-                <Tooltip formatter={(value) => `${value}%`} />
-                <Line
-                  type="monotone"
-                  dataKey="attendancePercentage"
-                  stroke="#4caf50"
-                  dot={{ r: 6 }}
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-          {/* Attendance Cards */}
-          <div className="attendance-list">
-            {attendanceDetails.map((entry) => (
-              <div
-                key={entry.date}
-                className={`attendance-card ${
-                  entry.status === "Present" ? "present-card" : "absent-card"
-                }`}
-              >
-                <p className="attendance-date">{entry.date}</p>
-                <p className="attendance-status">{entry.status}</p>
-              </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <p className="no-data">No attendance records available.</p>
-      )}
+        {attendanceDetails.length > 0 ? (
+          <>
+            <div className="chart-container mb-8">
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis
+                    domain={[0, 100]}
+                    tickFormatter={(value) => `${value}%`}
+                  />
+                  <Tooltip formatter={(value) => `${value}%`} />
+                  <Line
+                    type="monotone"
+                    dataKey="attendancePercentage"
+                    stroke="#4caf50"
+                    dot={{ r: 6 }}
+                    activeDot={{ r: 8 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {attendanceDetails.map((entry) => (
+                <div
+                  key={entry.date}
+                  className={`p-4 rounded-md shadow-md ${
+                    entry.status === "Present"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  <p className="font-medium">Date: {entry.date}</p>
+                  <p className="font-medium">Status: {entry.status}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="text-center">No attendance records available.</p>
+        )}
+      </div>
     </div>
   );
 };

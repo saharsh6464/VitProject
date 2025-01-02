@@ -1,154 +1,113 @@
-import React from 'react';
-import './SignUp.css'; // Import your CSS file
-import instituteLogo from "../assets/nie-campus-og.jpg";
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-import { getDatabase, ref, update } from "firebase/database";
-
-const hardcodeData = () => {
-  const db = getDatabase();
-
-  // Data to be hardcoded
-  const hardcodedData = {
-    students: {
-      "student1@example,com": {
-        name: "Alice Johnson",
-        subjects: {
-          AI: {
-            "1208122024": { date: "07/12/2024", status: 1 },
-            "1108122024": { date: "06/12/2024", status: 0 },
-            "1008122024": { date: "05/12/2024", status: 1 },
-            "0908122024": { date: "04/12/2024", status: 1 },
-            "0808122024": { date: "03/12/2024", status: 0 },
-            "0708122024": { date: "02/12/2024", status: 1 },
-            "0608122024": { date: "01/12/2024", status: 1 },
-            "0508122024": { date: "30/11/2024", status: 0 },
-            "0408122024": { date: "29/11/2024", status: 1 },
-            "0308122024": { date: "28/11/2024", status: 1 },
-            code: "AI2024"
-          },
-          DSA: {
-            "1208122024": { date: "07/12/2024", status: 0 },
-            "1108122024": { date: "06/12/2024", status: 1 },
-            "1008122024": { date: "05/12/2024", status: 1 },
-            "0908122024": { date: "04/12/2024", status: 0 },
-            "0808122024": { date: "03/12/2024", status: 0 },
-            "0708122024": { date: "02/12/2024", status: 1 },
-            "0608122024": { date: "01/12/2024", status: 1 },
-            "0508122024": { date: "30/11/2024", status: 1 },
-            "0408122024": { date: "29/11/2024", status: 1 },
-            "0308122024": { date: "28/11/2024", status: 1 },
-            code: "DSA2024"
-          },
-          MATHS: {
-            "1208122024": { date: "07/12/2024", status: 1 },
-            "1108122024": { date: "06/12/2024", status: 1 },
-            "1008122024": { date: "05/12/2024", status: 0 },
-            "0908122024": { date: "04/12/2024", status: 1 },
-            "0808122024": { date: "03/12/2024", status: 1 },
-            "0708122024": { date: "02/12/2024", status: 1 },
-            "0608122024": { date: "01/12/2024", status: 0 },
-            "0508122024": { date: "30/11/2024", status: 0 },
-            "0408122024": { date: "29/11/2024", status: 1 },
-            "0308122024": { date: "28/11/2024", status: 1 },
-            code: "MATHS2024"
-          }
-        }
-      },
-      "student2@example,com": {
-        name: "Bob Smith",
-        subjects: {
-          AI: {
-            "1208122024": { date: "07/12/2024", status: 1 },
-            "1108122024": { date: "06/12/2024", status: 0 },
-            "1008122024": { date: "05/12/2024", status: 1 },
-            "0908122024": { date: "04/12/2024", status: 1 },
-            "0808122024": { date: "03/12/2024", status: 0 },
-            "0708122024": { date: "02/12/2024", status: 1 },
-            "0608122024": { date: "01/12/2024", status: 1 },
-            "0508122024": { date: "30/11/2024", status: 0 },
-            "0408122024": { date: "29/11/2024", status: 1 },
-            "0308122024": { date: "28/11/2024", status: 1 },
-            code: "AI2024"
-          },
-          DSA: {
-            "1208122024": { date: "07/12/2024", status: 0 },
-            "1108122024": { date: "06/12/2024", status: 1 },
-            "1008122024": { date: "05/12/2024", status: 1 },
-            "0908122024": { date: "04/12/2024", status: 0 },
-            "0808122024": { date: "03/12/2024", status: 0 },
-            "0708122024": { date: "02/12/2024", status: 1 },
-            "0608122024": { date: "01/12/2024", status: 1 },
-            "0508122024": { date: "30/11/2024", status: 1 },
-            "0408122024": { date: "29/11/2024", status: 1 },
-            "0308122024": { date: "28/11/2024", status: 1 },
-            code: "DSA2024"
-          },
-          MATHS: {
-            "1208122024": { date: "07/12/2024", status: 1 },
-            "1108122024": { date: "06/12/2024", status: 1 },
-            "1008122024": { date: "05/12/2024", status: 0 },
-            "0908122024": { date: "04/12/2024", status: 1 },
-            "0808122024": { date: "03/12/2024", status: 1 },
-            "0708122024": { date: "02/12/2024", status: 1 },
-            "0608122024": { date: "01/12/2024", status: 0 },
-            "0508122024": { date: "30/11/2024", status: 0 },
-            "0408122024": { date: "29/11/2024", status: 1 },
-            "0308122024": { date: "28/11/2024", status: 1 },
-            code: "MATHS2024"
-          }
-        }
-      },
-      // Add 4 more students here following the same format
-    },
-    subjects: "AI DSA MATHS"
-  };
-
-  // Path in Firebase to update
-  const teacherRef = ref(db, "teachers/teacher1@gmail,com");
-
-  // Update the database with hardcoded data
-  update(teacherRef, hardcodedData)
-    .then(() => {
-      console.log("Data hardcoded successfully!");
-    })
-    .catch((error) => {
-      console.error("Error hardcoding data:", error);
-    });
-};
-
-
+import instituteLogo from "../assets/nie-campus-og.jpg";
 
 const AttendancePortal = () => {
-  hardcodeData();
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   return (
-    <div className="container">
-      <div id="header">
-        <h1>ATTENDANCE PORTAL</h1>
-        <div>
-          <Link to={'/student-login'} id="signInButton">Student Sign In</Link>
-          <Link to={'/teacher-login'} id="signInButton">Faculty Sign In</Link>
+    <div
+      className={`relative min-h-screen w-full flex flex-col justify-between transition-colors duration-500 ${
+        isDarkMode ? 'bg-gray-800 text-gray-100' : 'bg-gray-100 text-gray-900'
+      }`}
+    >
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${instituteLogo})` }}
+      ></div>
+
+      {/* Header Section */}
+      <header className="relative z-10 py-6 px-4">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <h1 className="text-2xl font-bold">ATTENDANCE PORTAL</h1>
+          <div className="flex space-x-4 items-center">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={!isDarkMode}
+                onChange={toggleTheme}
+                className="sr-only"
+              />
+              <div
+                className={`w-11 h-6 rounded-full peer ${
+                  isDarkMode ? 'bg-gray-400' : 'bg-gray-800'
+                } transition-colors duration-500`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full shadow transition-transform transform ${
+                    isDarkMode
+                      ? 'bg-gray-700 translate-x-0'
+                      : 'bg-gray-200 translate-x-5'
+                  }`}
+                ></span>
+              </div>
+            </label>
+          </div>
         </div>
-      </div>
+      </header>
 
-      <div id="background">
-        <div className="overlay"></div>
-        <img src={instituteLogo} alt="Institute Logo" className="overlay-image" />
-      </div>
+      {/* Content Section */}
+      <main className="relative z-10 flex-grow flex flex-col items-center px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center w-full max-w-6xl">
+          {/* Student Section */}
+          <div className="flex flex-col items-center animate-fade-in">
+            <img
+              src="https://thumbs.dreamstime.com/b/student-icon-white-background-71302919.jpg"
+              alt="Student"
+              className="w-20 h-20 sm:w-24 sm:h-24 md:w-35 md:h-28 lg:w-32 lg:h-32 rounded-full shadow-lg mb-4 hover:scale-105 transform transition duration-300"
+            />
+            <Link
+              to="/student-login"
+              className="font-semibold py-2 px-3 sm:px-4 md:px-6 rounded-md shadow-md focus:outline-none transform hover:scale-110 transition duration-300 bg-blue-500 hover:bg-blue-400 text-white"
+            >
+              Student Login
+            </Link>
+          </div>
 
-      <div id="loginMessage"></div>
-      <div id="attendanceMessage"></div>
+          {/* Teacher Section */}
+          <div className="flex flex-col items-center animate-fade-in">
+            <img
+              src="https://static.vecteezy.com/system/resources/previews/034/780/631/non_2x/teacher-icon-on-white-background-simple-illustration-free-vector.jpg"
+              alt="Teacher"
+              className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full shadow-lg mb-4 hover:scale-105 transform transition duration-300"
+            />
+            <Link
+              to="/teacher-login"
+              className="font-semibold py-2 px-3 sm:px-4 md:px-6 rounded-md shadow-md focus:outline-none transform hover:scale-110 transition duration-300 bg-blue-500 hover:bg-blue-400 text-white"
+            >
+              Teacher Login
+            </Link>
+          </div>
+        </div>
+      </main>
 
-      <footer id="footer">
-        <p>No 50, Koorgalli Village, Hootagalli Industrial Area, next to BEML, Mysuru, Karnataka 570018</p>
-        <p>&copy; 2024 All Rights Reserved</p>
+      {/* Footer */}
+      <footer
+        className={`relative z-10 py-8 px-4 text-center flex flex-col items-center ${'bg-gray-900 text-gray-400'
+        }`}
+      >
+        <div className="text-sm">No 50, Koorgalli Village, Hootagalli Industrial Area, next to BEML, Mysuru, Karnataka 570018</div>
+        <div className="text-sm mt-4">&copy; 2024 All Rights Reserved</div>
       </footer>
+
+      <style>
+        {`
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fade-in {
+            animation: fadeIn 1.5s ease-in-out;
+          }
+        `}
+      </style>
     </div>
   );
 };
 
 export default AttendancePortal;
-
-
-
-

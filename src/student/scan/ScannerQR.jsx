@@ -5,7 +5,7 @@ import {checkFingerprintTime,generateAndStoreFingerprint} from "../../store/fing
 // Haversine formula to calculate distance between two coordinates
 import { useContext } from "react";
 import { dataContext } from "../../store/data";
-function QRCodeScanner({ handleLoad, userLocation, dataip }) {
+function QRCodeScanner({ userLocation }) {
   const { personDetails } = useContext(dataContext);
   const [scannedData, setScannedData] = useState(null);
   const [error, setError] = useState(null);
@@ -73,12 +73,12 @@ function QRCodeScanner({ handleLoad, userLocation, dataip }) {
           parsedData.location.longitude
         );
 
-        if (distance !== -1) {
+        if (distance==-1) {
           console.log(distance);
           console.log("Scanned data:", parsedData);
           setScannedData(data);
           setError(null);
-          const parsedData1 = { ...parsedData, distance: distance, IP: dataip };
+          const parsedData1 = { ...parsedData, distance: distance };
           // handleLoad(parsedData1);
           console.log("Scan SUCESSFULL", parsedData1);
 
@@ -115,7 +115,6 @@ function QRCodeScanner({ handleLoad, userLocation, dataip }) {
 
   return (
     <div>
-      <h1>QR Code Scanner</h1>
 
       {/* QR Code Scanner */}
       {!scannedData && <Scanner sendData={handleScan} />}
