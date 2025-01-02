@@ -78,6 +78,7 @@ attendance-portal/
 ## Project Demo
 Experience the live application:  
 **[Hosted Application Link](<demo video link>)**
+**[Demo Video](<demo video link>)**
 
 ---
 
